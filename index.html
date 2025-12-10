@@ -7,30 +7,96 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
         body {
             font-family: 'Inter', 'Microsoft YaHei', sans-serif;
             color: #1f2937; 
-            background-image: 'bg.png';
+            /* 设置背景图 */
+            background-image: url('bg.png'); 
             background-size: cover; 
             background-attachment: fixed;
             background-repeat: no-repeat;
+            
+            position: relative; 
+            z-index: 1; 
         }
+        
+        /* 1. 默认（浅色）模式的背景遮罩 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; 
+            
+            /* 浅色模式：白色半透明遮罩 */
+            background-color: rgba(255, 255, 255, 0.4); 
+        }
+
         .link-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            /* 内容卡片的背景：浅色模式下为半透明白色 */
+            background-color: rgba(255, 255, 255, 0.9); 
         }
+        
         .link-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 15px -3px rgba(0, 217, 255, 0.525), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+
         .article-image {
             max-width: 150px;
             height: auto;
             margin-top: 1rem;
             margin-bottom: 1rem;            
         }
+
+        /* 2. 深色模式样式切换 */
+        @media (prefers-color-scheme: dark) {
+            /* 主体文本颜色和背景遮罩 */
+            body {
+                color: #f3f4f6; 
+            }
+            
+            body::before {
+                background-color: rgba(0, 0, 0, 0.6); 
+            }
+
+            /* 解决 h3 等标题颜色问题：使用 !important 强制覆盖 Tailwind 默认颜色 */
+            /* h1, h3 使用 text-gray-900 */
+            .text-gray-900 {
+                color: #f3f4f6 !important;
+            }
+            /* h2 使用 text-gray-700 */
+            .text-gray-700 {
+                color: #d1d5db !important;
+            }
+            /* P 标签使用 text-gray-500 */
+            .text-gray-500 {
+                color: #9ca3af !important;
+            }
+            
+            /* 调整内容卡片的背景为深色半透明 */
+            .link-card {
+                background-color: rgba(30, 41, 59, 0.9) !important;
+            }
+
+            /* 链接颜色变浅 */
+            .text-blue-600 {
+                color: #93c5fd !important;
+            }
+            .hover\:text-blue-700:hover {
+                color: #bfdbfe !important;
+            }
+        }
     </style>
     
 </head>
+
+
+
 <body class="min-h-screen p-4 sm:p-8">
 
     
