@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tomo しょう 的个人网站</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
             font-family: 'Inter', 'Microsoft YaHei', sans-serif;
-            background-color: #f7f7f7;
             color: #1f2937; 
             background-image: 'bg.png';
             background-size: cover; 
@@ -22,7 +20,13 @@
         }
         .link-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 217, 255, 0.525), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .article-image {
+            max-width: 150px;
+            height: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;            
         }
     </style>
     
@@ -32,29 +36,30 @@
     
     <div class="max-w-3xl mx-auto">
 
-        <!-- 头部信息 -->
         <header class="mb-10 text-center">
             <h1 class="text-4xl font-extrabold text-gray-900 mb-2">
                 Tomo しょう 的个人网站
             </h1>
-            <!-- 描述/注释说明 -->
             <p class="text-lg text-gray-500 tracking-wide">
                 2025
             </p>
         </header>
 
-        <!-- 导航/目录区 -->
+
         <nav class="flex justify-center space-x-4 mb-10">
             <a href="#myworks" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">我做的小玩意</a>
             <span class="text-gray-300">|</span>
             <a href="#warehouse" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">仓库</a>
             <span class="text-gray-300">|</span>
+            <a href="#note" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">笔记</a>
+            <span class="text-gray-300">|</span>
             <a href="#bookmark" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">网页书签</a>
             <span class="text-gray-300">|</span>
             <a href="#section-contact" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">联系方式</a>
+
         </nav>
 
-        <!-- 项目列表 -->
+
         <main>
             <!-- Section 1-->
             <h2 id="myworks" class="text-3xl font-bold text-gray-700 mt-12 mb-6 border-b-2 border-blue-500 pb-2">
@@ -63,6 +68,7 @@
 
             <div class="space-y-4">
                 <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <img src="images/jieboche.png" alt="图片" class="article-image rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">接驳车预约模拟网站</h3>
                     <p class="text-gray-500 mb-3">模拟企微接驳车预约成功界面，请节制使用</p>
                     <p class="mb-1">
@@ -81,6 +87,7 @@
                 </article>
                 
                 <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <img src="images/hibikeppt.png" alt="图片" class="article-image rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">【PPT模板】京吹</h3>
                     <p class="text-gray-500 mb-3">《吹响吧！上低音号》PPT模板</p>
                     <p class="mb-1">
@@ -98,6 +105,7 @@
 
 
                 <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <img src="images/spppt.png" alt="图片" class="article-image rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">【PPT模板】夏日口袋</h3>
                     <p class="text-gray-500 mb-3">《Summer Pockets》PPT模板</p>
                     <p class="mb-1">
@@ -115,6 +123,7 @@
                 </article>
 
                 <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <img src="images/mygoppt.png" alt="图片" class="article-image rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">【PPT模板】MyGO!!!!!</h3>
                     <p class="text-gray-500 mb-3">《BanG Dream: It's MyGO!!!!!》PPT模板</p>
                     <a href="https://github.com/Hsiao05/homepage/tree/main/MyGO%20PPT%E6%A8%A1%E6%9D%BF" target="_blank" class="inline-block text-blue-600 hover:text-blue-700 font-medium break-all">
@@ -125,6 +134,7 @@
 
                 
                 <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <img src="images/kanaderirika.png" alt="图片" class="article-image rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">梨梨花戳小奏脸的人机验证网站</h3>
                     <p class="text-gray-500 mb-3">复刻《吹响吧！上低音号 特别篇 ~合奏比赛~》戳脸画面的滑动验证网页</p>
                     <p class="mb-1">
@@ -156,7 +166,16 @@
                     </p>
                     </a>
                 </article>
-
+                <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-1">【教程】英语教学 SUNO AI 作曲</h3>
+                    <p class="text-gray-500 mb-3">利用 AI 作曲辅助教学的小教程</p>
+                    <p class="mb-1">
+                        <a href="https://four-mole-fa2.notion.site/Using-SUNO-AI-Composition-to-Assist-English-Teaching-2ab5e89967c980fdb42bc224e7ff629a" target="_blank" class="text-blue-600 hover:text-blue-700 font-medium break-all">
+                            four-mole-fa2.notion.site/Using-SUNO-AI-Composition-to-Assist-English-Teaching-2ab5e89967c980fdb42bc224e7ff629a
+                        </a>
+                    </p>
+                    </a>
+                </article>
             </div>
 
             <!-- Section 2 -->
@@ -168,6 +187,7 @@
  
 
                 <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <img src="images/seenanime.png" alt="图片" class="article-image rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">Bangumi 「已看」片单留档</h3>
                     <p class="text-gray-500 mb-3">摘录自个人 Bangumi</p>
                     <a href="https://four-mole-fa2.notion.site/2c45e89967c98009a6c0c48c27974086" target="_blank" class="inline-block text-blue-600 hover:text-blue-700 font-medium break-all">
@@ -176,6 +196,7 @@
                 </article>
 
                 <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <img src="images/seentogether.png" alt="图片" class="article-image rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">「一起看」的动画片单</h3>
                     <p class="text-gray-500 mb-3">「一起看」看过的/在看的 动画片单</p>
                     <a href="https://caramel-mascara-ed7.notion.site/29f2cfa96d5e8177ae1ff083b3e9c932?v=29f2cfa96d5e81419f29000cd7edb784" target="_blank" class="inline-block text-blue-600 hover:text-blue-700 font-medium break-all">
@@ -184,6 +205,7 @@
                 </article>
 
                <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <img src="images/hibikeillustration.png" alt="图片" class="article-image rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">京吹设定集收藏</h3>
                     <p class="text-gray-500 mb-3">京吹/利兹与青鸟 设定集</p>
                     <a href="hibikebooks.html" target="_blank" class="inline-block text-blue-600 hover:text-blue-700 font-medium break-all">
@@ -208,6 +230,7 @@
                 </article>
 
                <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <img src="images/muryou.png" alt="图片" class="article-image rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">无料设计稿件</h3>
                     <p class="text-gray-500 mb-3">京吹透卡/小邮票设计稿</p>
                     <a href="https://github.com/Hsiao05/homepage/tree/main/%E6%97%A0%E6%96%99%E8%AE%BE%E8%AE%A1" target="_blank" class="inline-block text-blue-600 hover:text-blue-700 font-medium break-all">
@@ -216,6 +239,7 @@
                 </article>
 
                 <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <img src="images/score.png" alt="图片" class="article-image rounded-lg shadow-sm">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">乐谱</h3>
                     <p class="text-gray-500 mb-3">Score</p>
                     <a href="https://github.com/Hsiao05/homepage/tree/main/%E4%B9%90%E8%B0%B1" target="_blank" class="inline-block text-blue-600 hover:text-blue-700 font-medium break-all">
@@ -234,12 +258,42 @@
             </div>
 
             <!-- Section 3 -->
+            <h2 id="note" class="text-3xl font-bold text-gray-700 mt-12 mb-6 border-b-2 border-blue-500 pb-2">
+                笔记
+            </h2>
+            
+            <div class="space-y-4">
+ 
+
+                <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-1">SLA</h3>
+                    <p class="text-gray-500 mb-3">二语习得 Chapter 1-4 &期中试题</p>
+                    <a href="https://four-mole-fa2.notion.site/Second-Language-Acquisition-2a65e89967c980a8900ef2dca41c1339" target="_blank" class="inline-block text-blue-600 hover:text-blue-700 font-medium break-all">
+                        four-mole-fa2.notion.site/Second-Language-Acquisition-2a65e89967c980a8900ef2dca41c1339
+                    </a>
+                </article>
+
+                    <h3 class="text-xl font-semibold text-gray-500 mb-1">未完待续……</h3>
+
+            </div>
+
+
+
+            <!-- Section 4 -->
             <h2 id="bookmark" class="text-3xl font-bold text-gray-700 mt-12 mb-6 border-b-2 border-blue-500 pb-2">
                 网页书签 
             </h2>
             
             
             <div class="space-y-4">
+                <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-1">动画巡礼</h3>
+                    <p class="text-gray-500 mb-3">配合谷歌地图的圣地巡礼标点网站</p>
+                    <a href="https://anitabi.cn/map" target="_blank" class="inline-block text-blue-600 hover:text-blue-700 font-medium break-all">
+                        anitabi.cn/map
+                    </a>
+                </article>
+                
                 <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">小游戏</h3>
                     <p class="text-gray-500 mb-3">合成北宇治 超好玩</p>
@@ -265,13 +319,7 @@
                     </a>                                   
                 </article>
 
-                <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-1">动画巡礼</h3>
-                    <p class="text-gray-500 mb-3">配合谷歌地图的圣地巡礼标点网站</p>
-                    <a href="https://anitabi.cn/map" target="_blank" class="inline-block text-blue-600 hover:text-blue-700 font-medium break-all">
-                        anitabi.cn/map
-                    </a>
-                </article>
+
                   
                 </article>
 
@@ -361,7 +409,6 @@
 
         </main>
 
-        <!-- 底部信息 -->
         <footer id="section-contact" class="mt-16 pt-8 border-t border-gray-200 text-center text-gray-500 text-sm">
             <p class="mb-2">
                 <span class="font-semibold text-gray-700">联系方式</span>
@@ -381,4 +428,3 @@
     </div>
 </body>
 </html>
-
