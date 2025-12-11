@@ -11,7 +11,7 @@
         body {
             font-family: 'Inter', 'Microsoft YaHei', sans-serif;
             color: #1f2937; 
-            /* 设置背景图 */
+
             background-image: url('bg.png'); 
             background-size: cover; 
             background-attachment: fixed;
@@ -21,7 +21,7 @@
             z-index: 1; 
         }
         
-        /* 1. 默认（浅色）模式的背景遮罩 */
+
         body::before {
             content: '';
             position: fixed;
@@ -31,13 +31,12 @@
             height: 100%;
             z-index: -1; 
             
-            /* 浅色模式：白色半透明遮罩 */
             background-color: rgba(255, 255, 255, 0.4); 
         }
 
         .link-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            /* 内容卡片的背景：浅色模式下为半透明白色 */
+
             background-color: rgba(255, 255, 255, 0.9); 
         }
         
@@ -53,9 +52,9 @@
             margin-bottom: 1rem;            
         }
 
-        /* 2. 深色模式样式切换 */
+
         @media (prefers-color-scheme: dark) {
-            /* 主体文本颜色和背景遮罩 */
+
             body {
                 color: #f3f4f6; 
             }
@@ -64,26 +63,24 @@
                 background-color: rgba(0, 0, 0, 0.6); 
             }
 
-            /* 解决 h3 等标题颜色问题：使用 !important 强制覆盖 Tailwind 默认颜色 */
-            /* h1, h3 使用 text-gray-900 */
             .text-gray-900 {
                 color: #f3f4f6 !important;
             }
-            /* h2 使用 text-gray-700 */
+
             .text-gray-700 {
                 color: #d1d5db !important;
             }
-            /* P 标签使用 text-gray-500 */
+
             .text-gray-500 {
                 color: #9ca3af !important;
             }
             
-            /* 调整内容卡片的背景为深色半透明 */
+
             .link-card {
                 background-color: rgba(30, 41, 59, 0.9) !important;
             }
 
-            /* 链接颜色变浅 */
+
             .text-blue-600 {
                 color: #93c5fd !important;
             }
@@ -341,6 +338,14 @@
             
             <div class="space-y-4">
  
+
+                <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-1">杂记</h3>
+                    <p class="text-gray-500 mb-3">随便记点什么的共享小笔记本</p>
+                    <a href="https://www.notion.so/2c65e89967c980b18399de7a6dd318dd?source=copy_link" target="_blank" class="inline-block text-blue-600 hover:text-blue-700 font-medium break-all">
+                        notion.so/2c65e89967c980b18399de7a6dd318dd
+                    </a>
+                </article>
 
                 <article class="link-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg">
                     <h3 class="text-xl font-semibold text-gray-900 mb-1">SLA</h3>
