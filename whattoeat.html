@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天吃什么？</title>
+    <style>
+        :root {
+            --primary: #e67e22;
+            --primary-dark: #d35400;
+            --bg-color: #fdf6e3;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-sub: #7f8c8d;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --radius: 16px;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        h1 { font-weight: 700; margin-bottom: 5px; color: var(--text-main); }
+        .subtitle { font-size: 0.9em; color: var(--text-sub); margin-bottom: 20px; font-weight: 500; }
+
+        /* --- Mode Switcher --- */
+        .mode-switch {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            background: #f0f0f0;
+            padding: 4px;
+            border-radius: 25px;
+            display: inline-flex;
+        }
+
+        .mode-btn {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-sub);
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: var(--primary);
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* --- Time & Selectors --- */
+        .status-area {
+            min-height: 40px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: #eee;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            color: var(--text-sub);
+        }
+        .time-badge.active { background: var(--primary); color: white; }
+
+        .manual-controls {
+            display: none;
+            gap: 10px;
+        }
+        .manual-controls.show { display: flex; }
+
+        select {
+            padding: 6px 10px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 0.9em;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        /* --- Result Card --- */
+        .result-card {
+            background: #fafafa;
+            border: 2px dashed #ddd;
+            border-radius: var(--radius);
+            padding: 30px 20px;
+            margin: 15px 0 25px 0;
+            transition: all 0.3s;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .result-card.revealed {
+            background: #fff8f0;
+            border: 2px solid var(--primary);
+            transform: scale(1.02);
+        }
+
+        .food-name { font-size: 1.8em; font-weight: bold; color: var(--text-main); margin-bottom: 8px; }
+        .food-loc { font-size: 0.9em; color: var(--primary); background: rgba(230, 126, 34, 0.1); padding: 4px 10px; border-radius: 6px; }
+
+        /* --- Inputs & Buttons --- */
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 0.8em; color: var(--text-sub); margin-bottom: 6px; margin-left: 4px; }
+        .code-input-wrapper { display: flex; gap: 10px; }
+        
+        input[type="text"] {
+            flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 10px;
+            font-size: 1em; background: #f9f9f9; font-family: monospace;
+        }
+        input[type="text"]:focus { outline: none; border-color: var(--primary); background: white; }
+
+        .btn {
+            padding: 12px 24px; border: none; border-radius: 10px;
+            font-size: 1em; font-weight: 600; cursor: pointer;
+            transition: transform 0.1s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; width: 100%;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
+        }
+        .btn-outline { background: transparent; color: var(--text-sub); border: 1px solid #ddd; padding: 8px 16px; font-size: 0.9em; }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        
+        .tools { margin-top: 30px; display: flex; justify-content: space-between; }
+
+        /* --- Modal Common --- */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal.open { display: flex; }
+        .modal-content {
+            background: white; width: 90%; max-width: 600px; border-radius: var(--radius);
+            padding: 25px; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column;
+        }
+
+        /* --- Editor Grid --- */
+        .grid-header { display: grid; grid-template-columns: 50px repeat(2, 1fr); gap: 8px; margin-bottom: 10px; font-weight: bold; color: var(--text-sub); font-size: 0.9em; text-align: center; }
+        .day-row { display: grid; grid-template-columns: 50px repeat(2, 1fr); gap: 8px; align-items: center; margin-bottom: 8px; }
+        .day-label { font-weight: bold; color: var(--primary); text-align: center; font-size: 0.9em; }
+        .meal-slot {
+            background: #f8f9fa; border: 1px solid #eee; border-radius: 8px; padding: 8px;
+            font-size: 0.85em; cursor: pointer; min-height: 24px;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+        }
+        .meal-slot:hover { background: #fff3e0; border-color: #ffd8b1; }
+        .meal-slot.filled { background: #e8f6f3; color: #27ae60; border-color: #d5f5e3; }
+        .meal-slot.target { border: 2px dashed var(--primary); }
+
+        /* --- Food Selector List --- */
+        .food-list-container { overflow-y: auto; margin-top: 10px; flex: 1; }
+        .food-group-title {
+            font-size: 0.85em; color: var(--text-sub); margin: 15px 0 5px 0; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 4px;
+        }
+        .food-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .food-item-btn {
+            background: #f9f9f9; border: 1px solid #eee; padding: 10px; border-radius: 8px; text-align: center; font-size: 0.9em; cursor: pointer;
+        }
+        .food-item-btn:hover { background: #fff8f0; border-color: var(--primary); color: var(--primary); }
+        .food-item-btn.delete { color: var(--danger); border-color: #fadbd8; background: #fdedec; }
+
+        .modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #eee; padding-top: 15px;}
+        
+        .copy-hint { font-size: 0.75em; color: var(--success); margin-top: 5px; opacity: 0; transition: opacity 0.3s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>今天吃什么？</h1>
+    <div class="subtitle">聚雅 | 荟贤</div>
+    
+    <!-- Mode Switch -->
+    <div class="mode-switch">
+        <div class="mode-btn active" id="btnAuto" onclick="setMode('auto')">⏱️ 自动时间</div>
+        <div class="mode-btn" id="btnManual" onclick="setMode('manual')">👆 手动指定</div>
+    </div>
+
+    <!-- Time Status / Manual Controls -->
+    <div class="status-area">
+        <div id="timeStatus" class="time-badge">检测时间中...</div>
+        
+        <div id="manualControls" class="manual-controls">
+            <select id="selDay">
+                <option value="0">周一</option>
+                <option value="1">周二</option>
+                <option value="2">周三</option>
+                <option value="3">周四</option>
+                <option value="4">周五</option>
+                <option value="5">周六</option>
+                <option value="6">周日</option>
+            </select>
+            <select id="selMeal">
+                <option value="lunch">🌞 午餐</option>
+                <option value="dinner">🌙 晚餐</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>🔐 本周食谱码 (粘贴恢复历史)</label>
+        <div class="code-input-wrapper">
+            <input type="text" id="codeString" placeholder="例如：X7k2..." onfocus="this.select()" oninput="loadFromInput()">
+            <button class="btn btn-outline" onclick="copyCode()" title="复制">📄</button>
+        </div>
+        <div id="copyHint" class="copy-hint">已复制！</div>
+    </div>
+
+    <div class="result-card" id="resultCard">
+        <div style="color:#ccc; font-size: 3em;">🍽️</div>
+        <div style="color:#aaa; margin-top:10px;">点击按钮抽取</div>
+    </div>
+
+    <button class="btn btn-primary" onclick="drawFood()">
+        🎲 帮我选一个
+    </button>
+
+    <div class="tools">
+        <button class="btn btn-outline" onclick="openEditor()">
+            📅 管理食谱
+        </button>
+        <button class="btn btn-outline" style="border:none; color:#e74c3c" onclick="resetWeek()">
+            🗑️ 清空
+        </button>
+    </div>
+</div>
+
+<!-- Editor Modal (Grid) -->
+<div class="modal" id="editorModal">
+    <div class="modal-content">
+        <h3>📅 本周食谱管理</h3>
+        <p style="font-size:0.8em; color:#666; margin-bottom:15px;">点击格子可添加、修改或清空记录。</p>
+        
+        <div class="grid-header">
+            <div></div><div>午餐</div><div>晚餐</div>
+        </div>
+        <div id="weekGrid" style="display:flex; flex-direction:column; gap:5px;"></div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="closeModal('editorModal')">完成</button>
+        </div>
+    </div>
+</div>
+
+<!-- Food Selector Modal -->
+<div class="modal" id="selectorModal" style="z-index: 110;">
+    <div class="modal-content" style="max-height: 70vh;">
+        <h3 style="margin:0 0 10px 0;">选择美食</h3>
+        <div class="food-list-container" id="foodList">
+            <!-- JS Populated -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('selectorModal')">取消</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Data ---
+    const foods = [
+        {id: 1, name: "饺子", loc: "聚雅一楼"},
+        {id: 2, name: "基本伙精选", loc: "聚雅一楼"},
+        {id: 3, name: "肉蛋堡", loc: "聚雅一楼"},
+        {id: 4, name: "蒸包+花生牛奶", loc: "聚雅一楼"},
+        {id: 5, name: "武大郎烧饼", loc: "聚雅一楼"},
+        {id: 6, name: "滑蛋饭", loc: "聚雅一楼"},
+        {id: 7, name: "广式", loc: "聚雅二楼"},
+        {id: 8, name: "盖浇饭", loc: "聚雅二楼"},
+        {id: 9, name: "盖码饭", loc: "聚雅二楼"},
+        {id: 10, name: "小炒肉", loc: "聚雅二楼"},
+        {id: 11, name: "米线", loc: "聚雅二楼"},
+        {id: 12, name: "石锅拌饭", loc: "聚雅二楼"},
+        {id: 13, name: "重庆小面", loc: "聚雅二楼"},
+        {id: 14, name: "刀削面", loc: "聚雅二楼"},
+        {id: 15, name: "兰州拉面", loc: "荟贤一楼"},
+        {id: 16, name: "新疆拌面", loc: "荟贤一楼"},
+        {id: 17, name: "蛋炒饭", loc: "荟贤一楼"},
+        {id: 18, name: "热干面/板面", loc: "荟贤一楼"},
+        {id: 19, name: "牛肉面", loc: "荟贤一楼"},
+        {id: 20, name: "蒸饺/葱油拌面", loc: "荟贤一楼"},
+        {id: 21, name: "荟贤一楼其他", loc: "荟贤一楼"},
+        {id: 22, name: "荟贤二楼面", loc: "荟贤二楼"},
+        {id: 23, name: "盖饭", loc: "荟贤二楼"},
+        {id: 24, name: "烤盘饭", loc: "荟贤二楼"},
+        {id: 25, name: "蛋炒饭", loc: "荟贤二楼"},
+        {id: 26, name: "牛肉粉", loc: "荟贤二楼"},
+        {id: 27, name: "荟贤二楼其他", loc: "荟贤二楼"}
+    ];
+
+    const DAY_NAMES = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+    let weeklyState = new Uint8Array(14).fill(0); // 0-6 Lunch, 7-13 Dinner
+    let isManualMode = false;
+    let editingSlotIndex = -1; // For selector
+
+    // --- Encryption (Same as before) ---
+    const CHAR_MAP = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    const KEY_SEED = [0x5A, 0xA5, 0x12, 0x88, 0x3F, 0xC9, 0x74, 0x2B, 0x9D, 0xE1, 0x06, 0x55, 0x43, 0xFE];
+
+    function encryptState(stateArr) {
+        let bitString = "";
+        for(let i=0; i<14; i++) {
+            bitString += stateArr[i].toString(2).padStart(5, '0');
+        }
+        let sum = stateArr.reduce((a,b)=>a+b, 0) % 63;
+        bitString += sum.toString(2).padStart(6, '0');
+        while(bitString.length < 96) bitString += (Math.random() > 0.5 ? '1' : '0');
+
+        let result = "";
+        for(let i=0; i<16; i++) {
+            let chunk = bitString.substr(i*6, 6);
+            let idx = (parseInt(chunk, 2) + i*3) % 64;
+            result += CHAR_MAP[idx];
+        }
+        return result;
+    }
+
+    function decryptState(code) {
+        if(!code || code.length !== 16) return new Uint8Array(14).fill(0);
+        try {
+            let bitString = "";
+            for(let i=0; i<16; i++) {
+                let rawIdx = CHAR_MAP.indexOf(code[i]);
+                if(rawIdx === -1) return new Uint8Array(14).fill(0);
+                let idx = (rawIdx - (i*3)) % 64;
+                if(idx < 0) idx += 64;
+                bitString += idx.toString(2).padStart(6, '0');
+            }
+            let newState = new Uint8Array(14);
+            for(let i=0; i<14; i++) newState[i] = parseInt(bitString.substr(i*5, 5), 2);
+            return newState;
+        } catch(e) { return new Uint8Array(14).fill(0); }
+    }
+
+    // --- Mode & Time Logic ---
+    function setMode(mode) {
+        isManualMode = (mode === 'manual');
+        document.getElementById('btnAuto').classList.toggle('active', !isManualMode);
+        document.getElementById('btnManual').classList.toggle('active', isManualMode);
+        
+        const timeBadge = document.getElementById('timeStatus');
+        const manualControls = document.getElementById('manualControls');
+
+        if(isManualMode) {
+            timeBadge.style.display = 'none';
+            manualControls.classList.add('show');
+        } else {
+            timeBadge.style.display = 'inline-block';
+            manualControls.classList.remove('show');
+            updateTimeStatus();
+        }
+    }
+
+    function getTargetSlot() {
+        if(isManualMode) {
+            const day = parseInt(document.getElementById('selDay').value);
+            const meal = document.getElementById('selMeal').value;
+            return meal === 'lunch' ? day : day + 7;
+        } else {
+            const now = new Date();
+            let dayIdx = now.getDay() === 0 ? 6 : now.getDay() - 1;
+            const h = now.getHours();
+            // Default logic: <15 lunch, >=15 dinner
+            if(h < 15) return dayIdx;
+            return dayIdx + 7;
+        }
+    }
+
+    function updateTimeStatus() {
+        if(isManualMode) return;
+        const now = new Date();
+        const h = now.getHours();
+        const dayIdx = now.getDay() === 0 ? 6 : now.getDay() - 1;
+        
+        let txt = DAY_NAMES[dayIdx] + " · ";
+        let isActive = false;
+
+        if (h >= 11 && h < 14) { txt += "🌞 午餐时段"; isActive = true; }
+        else if (h >= 17 && h < 20) { txt += "🌙 晚餐时段"; isActive = true; }
+        else { txt += "💤 非就餐时间"; }
+
+        const el = document.getElementById("timeStatus");
+        el.innerText = txt;
+        el.classList.toggle('active', isActive);
+    }
+
+    // --- Main Interactions ---
+    function updateInput() {
+        document.getElementById("codeString").value = encryptState(weeklyState);
+    }
+    
+    function loadFromInput() {
+        const val = document.getElementById("codeString").value.trim();
+        if(val.length === 16) {
+            weeklyState = decryptState(val);
+        }
+    }
+
+    function drawFood() {
+        loadFromInput(); // Sync
+        const slot = getTargetSlot();
+        
+        // Weight Logic
+        let counts = {};
+        weeklyState.forEach(id => { if(id>0) counts[id] = (counts[id]||0)+1; });
+        
+        let pool = [];
+        foods.forEach(f => {
+            let w = 10;
+            const c = counts[f.id] || 0;
+            if(c > 0) w = Math.floor(10 / (c * 2.5));
+            if(c >= 3) w = 0;
+            for(let k=0; k<w; k++) pool.push(f);
+        });
+
+        if(pool.length === 0) { alert("本周吃得太重复啦，重置一下吧！"); return; }
+        
+        const winner = pool[Math.floor(Math.random()*pool.length)];
+        
+        // Animation
+        const card = document.getElementById("resultCard");
+        card.innerHTML = `
+            <div class="food-name">${winner.name}</div>
+            <div class="food-loc">📍 ${winner.loc}</div>
+            <div style="margin-top:10px; font-size:0.8em; color:#999">
+                ${isManualMode ? "已存入手动选定位置" : "已为您记入本周食谱"}
+            </div>
+        `;
+        card.classList.remove("revealed");
+        void card.offsetWidth; 
+        card.classList.add("revealed");
+
+        weeklyState[slot] = winner.id;
+        updateInput();
+    }
+
+    function copyCode() {
+        const el = document.getElementById("codeString");
+        el.select(); navigator.clipboard.writeText(el.value);
+        const hint = document.getElementById("copyHint");
+        hint.style.opacity = "1"; setTimeout(()=>hint.style.opacity="0", 2000);
+    }
+
+    function resetWeek() {
+        if(confirm("确定要清空本周记录吗？")) {
+            weeklyState.fill(0);
+            updateInput();
+            alert("已清空");
+        }
+    }
+
+    // --- Editor & Selector Logic ---
+    function openEditor() {
+        loadFromInput();
+        renderGrid();
+        document.getElementById("editorModal").classList.add("open");
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+        if(id === 'editorModal') updateInput();
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById("weekGrid");
+        grid.innerHTML = "";
+        
+        // Current targeting logic for highlighting
+        const targetSlot = getTargetSlot(); 
+
+        for(let d=0; d<7; d++) {
+            const row = document.createElement("div");
+            row.className = "day-row";
+            
+            row.innerHTML = `<div class="day-label">${DAY_NAMES[d]}</div>`;
+            
+            // Lunch (idx d)
+            row.appendChild(createGridItem(d, targetSlot === d));
+            // Dinner (idx d+7)
+            row.appendChild(createGridItem(d+7, targetSlot === (d+7)));
+
+            grid.appendChild(row);
+        }
+    }
+
+    function createGridItem(idx, isTarget) {
+        const fid = weeklyState[idx];
+        const food = foods.find(f=>f.id===fid);
+        const div = document.createElement("div");
+        div.className = "meal-slot" + (food ? " filled" : "") + (isTarget ? " target" : "");
+        div.innerText = food ? food.name : "+";
+        
+        div.onclick = () => {
+            editingSlotIndex = idx;
+            openFoodSelector();
+        };
+        return div;
+    }
+
+    function openFoodSelector() {
+        const list = document.getElementById("foodList");
+        list.innerHTML = "";
+
+        // Group foods by Location
+        const locs = {};
+        foods.forEach(f => {
+            if(!locs[f.loc]) locs[f.loc] = [];
+            locs[f.loc].push(f);
+        });
+
+        // Clear Option
+        const clearBtn = document.createElement("div");
+        clearBtn.className = "food-item-btn delete";
+        clearBtn.innerText = "🗑️ 清空此餐";
+        clearBtn.onclick = () => selectFood(0);
+        list.appendChild(clearBtn);
+
+        // Render Groups
+        for(let loc in locs) {
+            const title = document.createElement("div");
+            title.className = "food-group-title";
+            title.innerText = loc;
+            list.appendChild(title);
+
+            const grid = document.createElement("div");
+            grid.className = "food-grid";
+            
+            locs[loc].forEach(f => {
+                const btn = document.createElement("div");
+                btn.className = "food-item-btn";
+                btn.innerText = f.name;
+                btn.onclick = () => selectFood(f.id);
+                grid.appendChild(btn);
+            });
+            list.appendChild(grid);
+        }
+
+        document.getElementById("selectorModal").classList.add("open");
+    }
+
+    function selectFood(id) {
+        if(editingSlotIndex !== -1) {
+            weeklyState[editingSlotIndex] = id;
+            renderGrid(); // Refresh underlying grid
+        }
+        closeModal("selectorModal");
+    }
+
+    window.onload = () => {
+        updateTimeStatus();
+        // Init Selectors
+        const daySel = document.getElementById('selDay');
+        const d = new Date().getDay();
+        daySel.value = d === 0 ? 6 : d - 1;
+    }
+
+</script>
+</body>
+</html>
